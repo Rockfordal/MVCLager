@@ -1,0 +1,69 @@
+﻿@model IEnumerable<MVCLager.Entities.StockItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm())
+{
+   @Html.TextBox("searchText", null, new { @class = "form-control", autofocus = "" })
+}
+
+<table class="table table-striped">
+    <tr>
+        @*</th>th>Id</th>*@
+        <th>@Html.ActionLink("Namn",        "Index", new { sortOrder = ViewBag.NameSortParm })</th>
+        <th>@Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescSortParm })</th>
+        <th>@Html.ActionLink("Price",       "Index", new { sortOrder = ViewBag.PriceSortParm })</th>
+        @* <th>Hylla</th> *@
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        @*<td>@item.ItemID</td>*@
+        <td>@item.Name</td>
+        <td>@item.Description</td>
+        <td>@item.Price</td>
+        <td>
+@*            <a href="/items/delete/@item.Id"><i class="fa fa-trash">Radera</i></a>*@
+            @Html.ActionLink("Ändra",  "Edit",   new { id = item.ItemID })
+            @Html.ActionLink("Radera", "Delete", new { id = item.ItemID })
+        </td>
+    </tr>
+}
+
+</table>
+
+@Html.ActionLink("Lägg till", "Create", null, new { @class = "btn btn-primary" })
+@*<a href="/items/create" class="btn btn-primary">Lägg till</a>*@
+
+@*<script>
+    function cb(body) {
+        //console.log("im the callback " + error);
+        //$(document).body.load(body);
+        $("body").first().load(body);
+    }
+
+    function goSearch() {
+        console.log("Söker..");
+        var searchText = $("#searchText").val();
+        var queryString = "SearchText=" + searchText;
+        //alert("Yo you want to search for " + searchText);
+        //$.post("/Items/Search", queryString, callBackSearch, "_default");
+        //$.post("/Items/Search/" + queryString, callBackSearch, "_default");
+        $.post("/Items/Search/" + queryString, cb);
+    }
+
+    window.onload = function() {
+        $(document).ready(function () {
+            $('#searchText').keypress(function (e) {
+                if (e.which == 13) {
+                    goSearch();
+                }
+            });
+        });
+    }
+</script>*@

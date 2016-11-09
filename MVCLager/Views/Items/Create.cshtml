@@ -1,0 +1,27 @@
+﻿@*@model MVCLager.Entities.StockItem*@
+@model MVCLager.Models.EditItemViewModel
+
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Nytt Item</h2>
+
+@using (Html.BeginForm())
+{
+   @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(i => i.Name)
+        @Html.TextBoxFor(i => i.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Description)
+        @Html.TextBoxFor(i => i.Description, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Price)
+        @Html.TextBoxFor(i => i.Price, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" value="Create" class="btn btn-success">Spara</button>
+}

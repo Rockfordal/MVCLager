@@ -1,0 +1,28 @@
+﻿@model MVCLager.Models.EditItemViewModel
+@{ ViewBag.Title = "Edit"; }
+
+<h2>Ändra item</h2>
+
+@*@Html.EditorForModel()*@
+@*@using (Html.BeginForm("Update", "Item", new { Id = 666 }, FormMethod.Post))*@
+@using (Html.BeginForm("Update", "Items", FormMethod.Post))
+{
+   @Html.AntiForgeryToken()
+
+   @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+   @Html.HiddenFor(model => model.ItemID)
+
+    <div class="form-group">
+        @Html.LabelFor(i => i.Name)
+        @Html.TextBoxFor(i => i.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Description)
+        @Html.TextBoxFor(i => i.Description, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Price)
+        @Html.TextBoxFor(i => i.Price, new { @class = "form-control" })
+    </div>
+    <button type="submit" value="Update" class="btn btn-success">Uppdatera</button>
+}
