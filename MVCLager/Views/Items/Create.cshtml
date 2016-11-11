@@ -12,7 +12,7 @@
    @Html.AntiForgeryToken()
     <div class="form-group">
         @Html.LabelFor(i => i.Name)
-        @Html.TextBoxFor(i => i.Name, new { @class = "form-control" })
+        @Html.TextBoxFor(i => i.Name, new { @class = "form-control", autofocus = "" })
     </div>
     <div class="form-group">
         @Html.LabelFor(i => i.Description)

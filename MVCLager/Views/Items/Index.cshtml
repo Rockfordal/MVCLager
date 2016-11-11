@@ -1,69 +1,92 @@
-﻿@model IEnumerable<MVCLager.Entities.StockItem>
+﻿@model PagedList.IPagedList<MVCLager.Entities.StockItem>
+@*@model IEnumerable<MVCLager.Models.EditCartItemViewModel>*@
+
+<script type="text/javascript" src="@Url.Content("/Scripts/app.js")"></script>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Artikelregister</h2>
 
-@using (Html.BeginForm())
+@*@using (Html.BeginForm())*@
+@using (Html.BeginForm("Index", "Items", FormMethod.Get))
 {
-   @Html.TextBox("searchText", null, new { @class = "form-control", autofocus = "" })
+   @Html.TextBox("searchString", null, new { @class = "form-control", autofocus = "" })
+   @*@Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", autofocus = "" })*@
+   @* @<input type="submit" value="Search" /> *@
 }
 
 <table class="table table-striped">
     <tr>
-        @*</th>th>Id</th>*@
-        <th>@Html.ActionLink("Namn",        "Index", new { sortOrder = ViewBag.NameSortParm })</th>
-        <th>@Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescSortParm })</th>
-        <th>@Html.ActionLink("Price",       "Index", new { sortOrder = ViewBag.PriceSortParm })</th>
+        <th>Id</th>
+        <th>Kategori</th>
+        <th>@Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter, page = @Model.PageNumber })</th>
+        <th>@Html.ActionLink("Description", "Index", new { sortOrder = ViewBag.DescSortParm, currentfilter = ViewBag.Currentfilter, page = @Model.PageNumber })</th>
+        <th>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm, currentfilter = ViewBag.CurrentFilter, page = @Model.PageNumber })</th>
         @* <th>Hylla</th> *@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        @*<td>@item.ItemID</td>*@
+    @foreach (var item in Model)
+    {
+        ViewBag.CategoryName = "";
+        if (item.Category != null)
+        {
+            ViewBag.CategoryName = item.Category.Name;
+        }
+        <tr>
+            <td>@item.ItemID</td>
+            <th>@ViewBag.CategoryName</th>
         <td>@item.Name</td>
         <td>@item.Description</td>
         <td>@item.Price</td>
-        <td>
-@*            <a href="/items/delete/@item.Id"><i class="fa fa-trash">Radera</i></a>*@
-            @Html.ActionLink("Ändra",  "Edit",   new { id = item.ItemID })
-            @Html.ActionLink("Radera", "Delete", new { id = item.ItemID })
-        </td>
+            <td>
+                @*<a href="/items/delete/@item.Id"><i class="fa fa-trash">Radera</i></a>*@
+                <i class="fa fa-edit">@Html.ActionLink("Ändra", "Edit", new { id = item.ItemID })</i>
+
+                <i class="fa fa-trash">
+                    @Html.ActionLink("Radera", "Delete", new { id = item.ItemID }, new { @class = "delete", data_id = item.ItemID, data_name = item.Name })
+
+                </i>
+            </td>
     </tr>
-}
+    }
 
 </table>
 
+
+
+<!-- Modal -->
+<div id="confirmModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Bekräftelse</h4>
+            </div>
+            <div class="modal-body">
+                <p>Är du säker på att du vill radera?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"  data-dismiss="modal" id="confirmDelete">Bekräfta</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Stäng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+Sida @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
 @Html.ActionLink("Lägg till", "Create", null, new { @class = "btn btn-primary" })
+
 @*<a href="/items/create" class="btn btn-primary">Lägg till</a>*@
-
-@*<script>
-    function cb(body) {
-        //console.log("im the callback " + error);
-        //$(document).body.load(body);
-        $("body").first().load(body);
-    }
-
-    function goSearch() {
-        console.log("Söker..");
-        var searchText = $("#searchText").val();
-        var queryString = "SearchText=" + searchText;
-        //alert("Yo you want to search for " + searchText);
-        //$.post("/Items/Search", queryString, callBackSearch, "_default");
-        //$.post("/Items/Search/" + queryString, callBackSearch, "_default");
-        $.post("/Items/Search/" + queryString, cb);
-    }
-
-    window.onload = function() {
-        $(document).ready(function () {
-            $('#searchText').keypress(function (e) {
-                if (e.which == 13) {
-                    goSearch();
-                }
-            });
-        });
-    }
-</script>*@

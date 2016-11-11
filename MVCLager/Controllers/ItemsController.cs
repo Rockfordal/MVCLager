@@ -7,36 +7,44 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace MVCLager.Controllers
 {
-    public class ItemsController : Controller
+    public class ItemsController : ApplicationController
     {
-        private ItemRepository Item = new ItemRepository();
+        private ItemRepository Item  = new ItemRepository();
         private ItemPleaser ItemEdit = new ItemPleaser();
 
         // GET: Items
-        //public ActionResult Index()
-        public ActionResult Index(string sortOrder, string searchText)
+        public ViewResult Index(string sortOrder, string searchString, string currentFilter, int? page)
         {
-            ViewBag.NameSortParm  = String.IsNullOrEmpty(sortOrder) ? "NameD" : "";
-            ViewBag.DescSortParm  = sortOrder == "Description" ? "DescD" : "Desc";
-            ViewBag.PriceSortParm = sortOrder == "Price" ? "PriceD" : "Price";
-            var items = Item.Search(searchText, sortOrder);
-            ModelState.Clear();
-            return View("Index", items);
+           if (searchString != null)
+              page = 1;
+           else
+              searchString = currentFilter;
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentSort   = sortOrder;
+            ViewBag.NameSortParm  = String.IsNullOrEmpty(sortOrder) ? "NameD"  : "";
+            ViewBag.DescSortParm  = sortOrder == "Description"      ? "DescD"  : "Desc";
+            ViewBag.PriceSortParm = sortOrder == "Price"            ? "PriceD" : "Price";
+
+            var items = Item.Search(searchString, sortOrder);
+            const int pageSize = 4;
+            int pageNumber = (page ?? 1);
+            return View(items.ToPagedList(pageNumber, pageSize));
         }
 
         // POST: Search, Sort
         //[HttpPost]
-        //public ActionResult Index(string sortOrder, string searchText)
+        //public ActionResult Index(string sortOrder, string searchString)
         //{
         //    ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
         //    ViewBag.DescriptionSortParm = sortOrder == "Description" ? "desc_desc" : "Description";
-
         //    var keys = Request.QueryString.Keys;
-        //    string sok = Request.QueryString["searchText"];
-        //    var items = Item.Search(searchText, sortOrder);
+        //    string sok = Request.QueryString["searchString"];
+        //    var items = Item.Search(searchString, sortOrder);
         //    ModelState.Clear();
         //    return View("Index", items);
         //}
@@ -45,14 +53,6 @@ namespace MVCLager.Controllers
         public ActionResult Create()
         {
             return View();
-        }
-
-        // GET: Edit
-        public ActionResult Edit(int? id)
-        {
-            //var item = Item.FindById(id);
-            var item = ItemEdit.GetItemForEdit(id);
-            return View(item);
         }
 
         // POST: Items/create
@@ -81,23 +81,33 @@ namespace MVCLager.Controllers
             }
         }
 
+        // GET: Edit
+        public ActionResult Edit(int? id)
+        {
+            //var item = Item.FindById(id);
+            var item = ItemEdit.GetItemForEdit(id);
+            return View(item);
+        }
+
+        // POST: Update
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ItemID,Name,Description,Price")] StockItem item)
         {
+            var p = Request;
             var m = EntityState.Modified;
             Item.UpdateItem(item, m);
             return RedirectToAction("Index");
         }
 
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return Content("Du måste ange en id");
-        //    }
-        //    Item.Delete(id);
-        //}
+        // GET: Edit
+        public ActionResult Buy(int? id)
+        {
+            //Item.AddToCart(id);
+            //return View(item);
+            //return RedirectToAction("Index");
+            return Content("Sorry, you cannot buy stuff yet");
+        }
 
         //[HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
@@ -106,6 +116,9 @@ namespace MVCLager.Controllers
             Item.DeleteById(id);
             return RedirectToAction("Index");
         }
+        //    if (id == null)
+        //        return Content("Du måste ange en id");
+        //    Item.Delete(id);
 
         public ActionResult Fel()
         {

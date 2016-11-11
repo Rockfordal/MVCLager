@@ -1,0 +1,43 @@
+﻿@*@model IEnumerable<MVCLager.Entities.CartItem>*@
+@model IEnumerable<MVCLager.Models.EditCartItemViewModel>
+
+@{
+    ViewBag.Title = "Kundvagn";
+}
+
+<h2>
+    Min Kundvagn (@ViewBag.CartLabel)</h2>
+
+<p>
+    @*@Html.ActionLink("Create New", "Create")*@
+    <u>@*Byt kundvagn*@</u>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Count)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Count)
+        </td>
+        <td class="actions">
+            <a href="@Url.Action("Increase", new { id=item.ID })"><i class="fa fa-plus"></i></a> &nbsp;
+            <a href="@Url.Action("Decrease", new { id=item.ID })"><i class="fa fa-minus"></i></a> &nbsp;
+            <a href="@Url.Action("Details", new { id=item.ID })"><i class="fa fa-info"></i></a> &nbsp;
+            <a href="@Url.Action("Delete", new { id = item.ID })"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+}
+
+</table>

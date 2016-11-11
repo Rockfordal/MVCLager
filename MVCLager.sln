@@ -5,6 +5,12 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCLager", "MVCLager\MVCLager.csproj", "{48E319D7-7AED-49BC-8395-6C741EC2E236}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{206489DC-B384-4BBA-8A2F-0FFBF33042C1}"
+	ProjectSection(SolutionItems) = preProject
+		MVCLager\CodeTemplates\MvcView\Edit.cs.t4 = MVCLager\CodeTemplates\MvcView\Edit.cs.t4
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -3,8 +3,6 @@
 
 <h2>Ändra item</h2>
 
-@*@Html.EditorForModel()*@
-@*@using (Html.BeginForm("Update", "Item", new { Id = 666 }, FormMethod.Post))*@
 @using (Html.BeginForm("Update", "Items", FormMethod.Post))
 {
    @Html.AntiForgeryToken()
@@ -14,7 +12,7 @@
 
     <div class="form-group">
         @Html.LabelFor(i => i.Name)
-        @Html.TextBoxFor(i => i.Name, new { @class = "form-control" })
+        @Html.TextBoxFor(i => i.Name, new { @class = "form-control", autofocus = "" })
     </div>
     <div class="form-group">
         @Html.LabelFor(i => i.Description)

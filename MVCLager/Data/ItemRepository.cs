@@ -23,6 +23,25 @@ namespace MVCLager.Data
             return item;
         }
 
+        internal void Add(StockItem item)
+        {
+            db.Items.Add(item);
+            db.SaveChanges();
+        }
+
+        internal void UpdateItem(StockItem item, EntityState m)
+        {
+            db.Entry(item).State = m;
+            db.SaveChanges();
+        }
+
+        internal void DeleteById(int? id)
+        {
+            StockItem item = db.Items.Find(id);
+            db.Items.Remove(item);
+            db.SaveChanges();
+        }
+
         internal object Search(string searchString)
         {
              if (MVCLager.Common.IsPresent(searchString))
@@ -31,12 +50,19 @@ namespace MVCLager.Data
                 return db.Items.Where(i => i.Name.ToLower().Contains(searchString.ToLower()));
         }
 
-        internal object Search(string searchString, string sortOrder)
+        internal IQueryable<StockItem> Search(string searchString, string sortOrder)
         {
             var items = db.Items.Select(i => i);
 
             if (MVCLager.Common.IsPresent(searchString))
-                items = db.Items.Where(i => i.Name.ToLower().Contains(searchString.ToLower()));
+                items = db.Items
+                    .Include(i => i.Category)
+                    .Where(i => 
+                     (string.IsNullOrEmpty(searchString)
+                     || i.Name.ToLower().Contains(searchString.ToLower())
+                     || i.Description.ToLower().Contains(searchString.ToLower())
+                     || i.Price.ToString().Contains(searchString)
+                    ));
 
             switch (sortOrder)
             {
@@ -60,25 +86,6 @@ namespace MVCLager.Data
                     break;
             }
             return items;
-        }
-
-        internal void Add(StockItem item)
-        {
-            db.Items.Add(item);
-            db.SaveChanges();
-        }
-
-        internal void UpdateItem(StockItem item, EntityState m)
-        {
-            db.Entry(item).State = m;
-            db.SaveChanges();
-        }
-
-        internal void DeleteById(int? id)
-        {
-            StockItem item = db.Items.Find(id);
-            db.Items.Remove(item);
-            db.SaveChanges();
         }
 
     }

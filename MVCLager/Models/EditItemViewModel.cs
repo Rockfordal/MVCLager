@@ -21,5 +21,8 @@ namespace MVCLager.Models
 
         [DisplayName("Hylla")]
         public string Shelf { get; set; }
+
+        [DisplayName("Kategori")]
+        public string CategoryName { get; set; }
     }
 }

@@ -16,6 +16,10 @@ namespace MVCLager
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // Fixa så att decimaltal funkar med , och .
+            ModelBinders.Binders.Add(typeof(decimal),  new DecimalModelBinder());
+            ModelBinders.Binders.Add(typeof(decimal?), new DecimalModelBinder());
         }
     }
 }

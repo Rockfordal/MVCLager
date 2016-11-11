@@ -18,12 +18,34 @@ namespace MVCLager.Data
                 .Where(i => i.ItemID == ItemId)
                 .Select(i => new EditItemViewModel()
                 {
-                    ItemID = i.ItemID,
-                    Name = i.Name,
+                    ItemID      = i.ItemID,
+                    Name        = i.Name,
                     Description = i.Description,
-                    Price = i.Price
+                    Price       = i.Price
                 });
             return query.FirstOrDefault();
         }
+
+        public IEnumerable<EditItemViewModel> GetCartItemsForEdit(IEnumerable<StockItem> stockItems)
+        {
+            List<EditItemViewModel> items = new List<EditItemViewModel>();
+
+            foreach (var item in stockItems)
+            {
+                var newItem = new EditItemViewModel
+                {
+                    ItemID = item.ItemID,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Price = item.Price,
+                    CategoryName = item.Category.Name
+                    //Shelf = item.Shelf
+                };
+                items.Add(newItem);
+            }
+
+            return (IEnumerable<EditItemViewModel>) items;
+        }
+
     }
 }
